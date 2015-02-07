@@ -8,9 +8,65 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.bulletcross.database.MainActivity" >
 
-    <TextView
+    <Button
+        android:id="@+id/save"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/emailText"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="66dp"
+        android:text="Save" />
+
+    <EditText
+        android:id="@+id/nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/save"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="27dp"
+        android:ems="10"
+        android:hint="Name" />
+
+    <EditText
+        android:id="@+id/emailText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/nameText"
+        android:layout_below="@+id/nameText"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="email" />
+
+    <Button
+        android:id="@+id/show"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/save"
+        android:layout_alignBottom="@+id/save"
+        android:layout_alignRight="@+id/emailText"
+        android:text="Show" />
+
+    <TextView
+        android:id="@+id/nameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/show"
+        android:layout_marginRight="19dp"
+        android:layout_marginTop="30dp"
+        android:layout_toLeftOf="@+id/show"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/emailView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/nameView"
+        android:layout_below="@+id/nameView"
+        android:layout_marginTop="37dp"
+        android:text="Email"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
