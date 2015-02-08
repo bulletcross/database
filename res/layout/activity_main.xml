@@ -69,4 +69,13 @@
         android:text="Email"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <Button
+        android:id="@+id/export"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/emailView"
+        android:layout_centerVertical="true"
+        android:text="Export" />
+
 </RelativeLayout>

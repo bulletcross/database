@@ -23,7 +23,7 @@ public class DataHandler {
 		dbhelper = new DataBaseHelper(ctx1);
 	}
 	
-	private static class DataBaseHelper extends SQLiteOpenHelper{
+	static class DataBaseHelper extends SQLiteOpenHelper{
 
 		public DataBaseHelper(Context ctx1) {
 			super(ctx1, DATABASE_NAME, null, DATABASE_VERSION);
