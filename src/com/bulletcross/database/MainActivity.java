@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import com.opencsv.CSVWriter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
@@ -21,74 +25,43 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements LocationListener{
 	
-	Button save,show,export;
-	EditText name,email;
-	TextView Name,Email;
+	Button start,export;
 	DataHandler handler;
 	Cursor C;
+	boolean toggle;
+	private LocationManager locationManager;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		save = (Button) findViewById(R.id.save);
-		show = (Button) findViewById(R.id.show);
+		start = (Button) findViewById(R.id.start);
 		export = (Button) findViewById(R.id.export);
-		name = (EditText) findViewById(R.id.nameText);
-		email = (EditText) findViewById(R.id.emailText);
-		Name = (TextView) findViewById(R.id.nameView);
-		Email = (TextView) findViewById(R.id.emailView);
 		
 		handler = new DataHandler(getBaseContext());
 		handler.open();
 		C = handler.returnData();
 		
-	save.setOnClickListener(new OnClickListener(){
+		toggle = false;
+		
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,5000,10, this);
+		
+	start.setOnClickListener(new OnClickListener(){
 			
 		@Override
 		public void onClick(View v) {
-			String getName = name.getText().toString();
-			String getEmail = email.getText().toString();
-			//handler = new DataHandler(getBaseContext());
-			//handler.open();
-			long id = handler.insertData(getName, getEmail);
-			handler = new DataHandler(getBaseContext());
-			handler.open();
-			C = handler.returnData();
-			Toast.makeText(getBaseContext(), "Inserted", Toast.LENGTH_LONG).show();
-			//handler.close();
+			if(toggle){
+				toggle = false;
+				Toast.makeText(getBaseContext(), "Toggled off", Toast.LENGTH_LONG).show();
+			}
+			else{
+				toggle = true;
+				Toast.makeText(getBaseContext(), "Toggled on", Toast.LENGTH_LONG).show();
+			}
 			
 		}
-	});
-	
-	show.setOnClickListener(new OnClickListener(){
-
-		@Override
-		public void onClick(View v) {
-			String getName,getEmail;
-			getName = "";
-			getEmail = "";
-			//handler = new DataHandler(getBaseContext());
-			//handler.open();
-			//Cursor C = handler.returnData();
-			/*if(C.moveToFirst()){
-				do{
-					getName = C.getString(0);
-					getEmail = C.getString(1);
-				}while(C.moveToNext());
-			}
-			//handler.close();
-			Toast.makeText(getBaseContext(), "Name:" + getName + ", Email: "+getEmail,Toast.LENGTH_LONG).show();*/
-			if(!C.moveToNext()){
-				C.moveToFirst();
-			}
-			getName = C.getString(0);
-			getEmail = C.getString(1);
-			Name.setText(getName);
-			Email.setText(getEmail);
-			
-		}	
 	});
 	
 	export.setOnClickListener(new OnClickListener(){
@@ -104,28 +77,18 @@ public class MainActivity extends Activity {
 		    File file = new File(exportDir, "excerDB.csv");
 		    try{
 		        if (exportDir.createNewFile()){
-		            //System.out.println("File is created!");
 		        	Toast.makeText(getBaseContext(), "File is created! at "+ file.getAbsolutePath(),Toast.LENGTH_LONG).show();
-		            //System.out.println("myfile.csv "+file.getAbsolutePath());
 		          }else{
-		            //System.out.println("File already exists.");
 		        	  Toast.makeText(getBaseContext(), "File already exists",Toast.LENGTH_LONG).show();
 		          }
 		        CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-		      //SQLiteDatabase db = dbhelper.getWritableDatabase();
 		        Cursor curCSV=handler.db.rawQuery("select * from " + handler.TABLE_NAME,null);
-		        //csvWrite.writeNext(curCSV.getColumnNames());
 		        while(curCSV.moveToNext()){
 		            String arrStr[] ={curCSV.getString(0),curCSV.getString(1)};
-		         /*curCSV.getString(3),curCSV.getString(4)};*/
 		            csvWrite.writeNext(arrStr);
 		        }
 		        csvWrite.close();
 		        curCSV.close();
-		        /*String data="";
-		        data=readSavedData();
-		        data= data.replace(",", ";");
-		        writeData(data);*/
 		    }
 		    catch(SQLException sqlEx){
 		        //Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
@@ -168,5 +131,29 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	@Override
+	public void onLocationChanged(Location location) {
+		String str = "Latitude: "+location.getLatitude()+"Longitude: "+location.getLongitude();
+		Toast.makeText(getBaseContext(), str, Toast.LENGTH_LONG).show();
+		if(toggle){
+			long id = handler.insertData(location.getLatitude(), location.getLongitude());
+		}
+		
+	}
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onProviderEnabled(String provider) {
+		Toast.makeText(getBaseContext(), "Gps turned on ", Toast.LENGTH_LONG).show();
+		
+	}
+	@Override
+	public void onProviderDisabled(String provider) {
+		Toast.makeText(getBaseContext(), "Gps turned off ", Toast.LENGTH_LONG).show();
+		
 	}
 }

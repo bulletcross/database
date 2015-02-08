@@ -8,12 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataHandler {
-	public static final String NAME = "name";
-	public static final String EMAIL = "email";
+	public static final String LAT = "lattitude";
+	public static final String LON = "longitude";
 	public static final String TABLE_NAME = "mytable";
 	public static final String DATABASE_NAME = "mydatabase";
 	public static final int DATABASE_VERSION = 1;
-	public static final String TABLE_CREATE = "create table mytable(name text not null, email text not null);";
+	public static final String TABLE_CREATE = "create table mytable(latitude text not null, longitude text not null);";
 	
 	DataBaseHelper dbhelper;
 	Context ctx;
@@ -55,14 +55,14 @@ public class DataHandler {
 		dbhelper.close();
 	}
 	
-	public long insertData(String name, String email){
+	public long insertData(double d, double e){
 		ContentValues content = new ContentValues();
-		content.put(NAME, name);
-		content.put(EMAIL, email);
+		content.put(LAT, d);
+		content.put(LON, e);
 		return db.insert(TABLE_NAME, null, content);
 	}
 	
 	public Cursor returnData(){
-		return db.query(TABLE_NAME,new String[]{NAME,EMAIL},null,null,null,null,null);
+		return db.query(TABLE_NAME,new String[]{LAT,LON},null,null,null,null,null);
 	}
 }
